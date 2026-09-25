@@ -1,6 +1,10 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4100";
+const DEFAULT_API_URL = import.meta.env.PROD
+  ? "https://graveyard-backend.onrender.com"
+  : "http://localhost:4100";
+
+const API_URL = (import.meta.env.VITE_API_URL || DEFAULT_API_URL).replace(/\/+$/, "");
 
 export class ApiError extends Error {
   status: number;
