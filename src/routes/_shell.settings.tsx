@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/graveyard/PageHeader";
+import { SettingsSkeleton, GraveSpinner } from "@/components/graveyard/GraveyardSkeletons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -75,6 +76,15 @@ function SettingsPage() {
     }
   }
 
+  if (profileQuery.isLoading || settingsQuery.isLoading) {
+    return (
+      <div className="max-w-3xl">
+        <PageHeader eyebrow="// system_config" title="SETTINGS" description="Rules of the crypt." />
+        <SettingsSkeleton />
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-3xl">
       <PageHeader eyebrow="// system_config" title="SETTINGS" description="Rules of the crypt." />
@@ -118,7 +128,11 @@ function SettingsPage() {
           onClick={() => void save()}
           disabled={updateProfile.isPending || updateSettings.isPending}
         >
-          SAVE CHANGES
+          {updateProfile.isPending || updateSettings.isPending ? (
+            <GraveSpinner size="sm" text="PRESERVING..." />
+          ) : (
+            "SAVE CHANGES"
+          )}
         </Button>
       </div>
     </div>

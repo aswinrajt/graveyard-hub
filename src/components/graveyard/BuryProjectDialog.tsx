@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import { GraveSpinner } from "./GraveyardSkeletons";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -236,7 +237,16 @@ export function BuryProjectDialog({
             onClick={() => void submit()}
             disabled={create.isPending || update.isPending}
           >
-            {isEdit ? "SAVE CHANGES" : "COMMIT TO THE GROUND"}
+            {create.isPending || update.isPending ? (
+              <GraveSpinner
+                size="sm"
+                text={isEdit ? "INTERRING CHANGES..." : "COMMITTING TO GROUND..."}
+              />
+            ) : isEdit ? (
+              "SAVE CHANGES"
+            ) : (
+              "COMMIT TO THE GROUND"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

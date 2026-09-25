@@ -17,6 +17,7 @@ import { PageHeader } from "@/components/graveyard/PageHeader";
 import { StatCard } from "@/components/graveyard/StatCard";
 import { StatusBadge } from "@/components/graveyard/StatusBadge";
 import { TombstoneCard } from "@/components/graveyard/TombstoneCard";
+import { DashboardSkeleton } from "@/components/graveyard/GraveyardSkeletons";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useDashboard, useForgotten } from "@/lib/queries";
@@ -48,8 +49,22 @@ const statusColor: Record<string, string> = {
 };
 
 function DashboardPage() {
-  const { data } = useDashboard();
+  const { data, isLoading } = useDashboard();
   const forgotten = useForgotten();
+
+  if (isLoading) {
+    return (
+      <div>
+        <PageHeader
+          eyebrow="// command_center"
+          title="THE COMMAND CENTER"
+          description="Vital signs from every repository you ever loved, neglected, or entombed."
+        />
+        <DashboardSkeleton />
+      </div>
+    );
+  }
+
   const total = data?.totals.total ?? 0;
   const active = data?.totals.active ?? 0;
   const abandoned = data?.totals.abandoned ?? 0;

@@ -5,6 +5,7 @@ import { useSearch } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TombstoneSkeleton, GraveSpinner } from "@/components/graveyard/GraveyardSkeletons";
 import {
   Select,
   SelectContent,
@@ -132,14 +133,23 @@ export function ProjectArchive({ lockStatus }: { lockStatus?: ProjectStatus }) {
         )}
       </div>
 
-      <p className="terminal-label mb-4">
-        {isPending ? "exhuming records…" : `${results.length} remains found`}
-      </p>
+      <div className="mb-4 flex items-center justify-between">
+        <p className="terminal-label flex items-center gap-2">
+          {isPending ? (
+            <>
+              <GraveSpinner size="sm" />
+              <span>exhuming records…</span>
+            </>
+          ) : (
+            `${results.length} remains found`
+          )}
+        </p>
+      </div>
 
       {isPending ? (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-[22rem] tomb bg-card/60" />
+          {Array.from({ length: 8 }).map((_, i) => (
+            <TombstoneSkeleton key={i} index={i} />
           ))}
         </div>
       ) : results.length === 0 ? (

@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
 import { Atmosphere } from "@/components/graveyard/Atmosphere";
+import { GraveSpinner } from "@/components/graveyard/GraveyardSkeletons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -76,7 +77,7 @@ function LoginPage() {
             </div>
           </div>
           <Button type="submit" className="mt-6 w-full font-mono text-xs tracking-widest" disabled={login.isPending}>
-            {login.isPending ? "AUTHENTICATING…" : "ENTER THE GRAVEYARD"}
+            {login.isPending ? <GraveSpinner size="sm" text="OPENING CRYPT GATES..." /> : "ENTER THE GRAVEYARD"}
           </Button>
           <p className="mt-4 text-center font-mono text-[0.68rem] text-muted-foreground">
             No plot yet?{" "}

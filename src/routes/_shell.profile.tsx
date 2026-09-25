@@ -4,6 +4,7 @@ import { Skull, Flame, Trophy, Archive } from "lucide-react";
 import { PageHeader } from "@/components/graveyard/PageHeader";
 import { StatCard } from "@/components/graveyard/StatCard";
 import { StatusBadge } from "@/components/graveyard/StatusBadge";
+import { ProfileSkeleton } from "@/components/graveyard/GraveyardSkeletons";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useProfile } from "@/lib/queries";
 
@@ -20,7 +21,17 @@ export const Route = createFileRoute("/_shell/profile")({
 });
 
 function ProfilePage() {
-  const { data } = useProfile();
+  const { data, isLoading } = useProfile();
+
+  if (isLoading) {
+    return (
+      <div>
+        <PageHeader eyebrow="// gravekeeper_record" title="DEVELOPER PROFILE" />
+        <ProfileSkeleton />
+      </div>
+    );
+  }
+
   const profile = data?.profile;
   const stats = data?.stats;
   const timeline = data?.timeline ?? [];

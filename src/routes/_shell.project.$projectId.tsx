@@ -5,8 +5,10 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/graveyard/StatusBadge";
 import { BuryProjectDialog } from "@/components/graveyard/BuryProjectDialog";
+import { GraveSpinner, ProjectDetailSkeleton } from "@/components/graveyard/GraveyardSkeletons";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -53,6 +55,7 @@ export const Route = createFileRoute("/_shell/project/$projectId")({
     };
   },
   component: ProjectDetail,
+  pendingComponent: ProjectDetailSkeleton,
   notFoundComponent: GraveNotFound,
 });
 
@@ -124,12 +127,24 @@ function ProjectDetail() {
               }
             }}
           >
-            <Flame className="size-4" /> REVIVE PROJECT
+            {revive.isPending ? (
+              <GraveSpinner size="sm" text="REVIVING..." />
+            ) : (
+              <>
+                <Flame className="size-4" /> REVIVE PROJECT
+              </>
+            )}
           </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="outline" className="font-mono text-xs tracking-widest">
-                <Shovel className="size-4" /> BURY PROJECT
+              <Button variant="outline" className="font-mono text-xs tracking-widest" disabled={bury.isPending}>
+                {bury.isPending ? (
+                  <GraveSpinner size="sm" text="SEALING..." />
+                ) : (
+                  <>
+                    <Shovel className="size-4" /> BURY PROJECT
+                  </>
+                )}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent className="border-primary/30">
@@ -155,7 +170,7 @@ function ProjectDetail() {
                     }
                   }}
                 >
-                  CONFIRM BURIAL
+                  {bury.isPending ? <GraveSpinner size="sm" text="SEALING..." /> : "CONFIRM BURIAL"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -236,23 +251,40 @@ function ProjectDetail() {
               }}
             />
             <div className="mt-4 grid grid-cols-2 gap-3">
-              {Array.from({ length: 4 }).map((_, i) => {
-                const art = slots[i];
-                return (
-                  <button
-                    key={art?.id ?? i}
-                    type="button"
-                    className="grid aspect-video place-items-center overflow-hidden rounded-sm border border-dashed border-border bg-muted/20 text-muted-foreground/60"
-                    onClick={() => fileRef.current?.click()}
-                  >
-                    {art ? (
+              {artifacts.isLoading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="aspect-video rounded-sm" />
+                ))
+              ) : upload.isPending ? (
+                <>
+                  <div className="grid aspect-video place-items-center rounded-sm border border-primary/40 bg-primary/10">
+                    <GraveSpinner size="sm" text="ENTOMBING..." />
+                  </div>
+                  {slots.slice(0, 3).map((art, i) => (
+                    <div key={art.id ?? i} className="aspect-video overflow-hidden rounded-sm border border-border">
                       <img src={art.publicUrl} alt="" className="size-full object-cover" />
-                    ) : (
-                      <ImageIcon className="size-5" />
-                    )}
-                  </button>
-                );
-              })}
+                    </div>
+                  ))}
+                </>
+              ) : (
+                Array.from({ length: 4 }).map((_, i) => {
+                  const art = slots[i];
+                  return (
+                    <button
+                      key={art?.id ?? i}
+                      type="button"
+                      className="grid aspect-video place-items-center overflow-hidden rounded-sm border border-dashed border-border bg-muted/20 text-muted-foreground/60 transition-colors hover:border-primary/50 hover:bg-muted/30"
+                      onClick={() => fileRef.current?.click()}
+                    >
+                      {art ? (
+                        <img src={art.publicUrl} alt="" className="size-full object-cover" />
+                      ) : (
+                        <ImageIcon className="size-5" />
+                      )}
+                    </button>
+                  );
+                })
+              )}
             </div>
           </section>
 

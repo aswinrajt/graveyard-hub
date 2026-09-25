@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
 import { Atmosphere } from "@/components/graveyard/Atmosphere";
+import { GraveSpinner } from "@/components/graveyard/GraveyardSkeletons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -90,7 +91,7 @@ function RegisterPage() {
             className="mt-6 w-full font-mono text-xs tracking-widest"
             disabled={register.isPending}
           >
-            {register.isPending ? "ENGRAVING…" : "OPEN THE GATES"}
+            {register.isPending ? <GraveSpinner size="sm" text="ENGRAVING YOUR PLOT..." /> : "OPEN THE GATES"}
           </Button>
           <p className="mt-4 text-center font-mono text-[0.68rem] text-muted-foreground">
             Already interred?{" "}

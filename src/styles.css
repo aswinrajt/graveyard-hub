@@ -300,3 +300,31 @@
 @utility animate-rise {
   animation: rise-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
+
+@keyframes bone-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes skull-float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 6px color-mix(in oklab, var(--primary) 50%, transparent));
+  }
+  50% {
+    transform: translateY(-4px) scale(1.05);
+    filter: drop-shadow(0 0 14px color-mix(in oklab, var(--toxic) 60%, transparent));
+  }
+}
+
+@utility animate-bone-shimmer {
+  animation: bone-shimmer 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@utility animate-skull-float {
+  animation: skull-float 2.2s ease-in-out infinite;
+}

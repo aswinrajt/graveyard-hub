@@ -19,6 +19,7 @@ import { Clock, Flame, Skull, Trophy } from "lucide-react";
 
 import { PageHeader } from "@/components/graveyard/PageHeader";
 import { StatCard } from "@/components/graveyard/StatCard";
+import { AnalyticsSkeleton } from "@/components/graveyard/GraveyardSkeletons";
 import { Progress } from "@/components/ui/progress";
 import { useAnalytics } from "@/lib/queries";
 
@@ -38,7 +39,21 @@ export const Route = createFileRoute("/_shell/analytics")({
 });
 
 function AnalyticsPage() {
-  const { data } = useAnalytics();
+  const { data, isLoading } = useAnalytics();
+
+  if (isLoading) {
+    return (
+      <div>
+        <PageHeader
+          eyebrow="// mortality_report"
+          title="MORTALITY ANALYTICS"
+          description="Post-mortem statistics compiled from every repository in the crypt."
+        />
+        <AnalyticsSkeleton />
+      </div>
+    );
+  }
+
   const causes = data?.causes ?? [];
   const max = Math.max(...causes.map((c) => c.count), 1);
   const createdVsAbandoned = data?.createdVsAbandoned ?? [];

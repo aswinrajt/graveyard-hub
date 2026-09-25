@@ -4,6 +4,7 @@ import { Archive, Flame, History, Search, Skull, ArrowRight } from "lucide-react
 import { Button } from "@/components/ui/button";
 import { Atmosphere } from "@/components/graveyard/Atmosphere";
 import { TombstoneCard } from "@/components/graveyard/TombstoneCard";
+import { TombstoneSkeleton } from "@/components/graveyard/GraveyardSkeletons";
 import { useAnalytics, useMe, useProjects } from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
@@ -133,16 +134,20 @@ function Landing() {
         </div>
       </section>
 
-      {showcase.length > 0 && (
+      {(showcase.length > 0 || projectsQuery.isLoading) && (
         <section className="relative z-10 mx-auto max-w-7xl px-5 pb-28">
           <div className="mb-6 text-center">
             <p className="terminal-label text-primary/80">// preview_sector</p>
             <h2 className="mt-1 font-display text-2xl font-bold tracking-[0.14em]">RECENT INTERMENTS</h2>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {showcase.map((p, i) => (
-              <TombstoneCard key={p.id} project={p} index={i} />
-            ))}
+            {projectsQuery.isLoading
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <TombstoneSkeleton key={i} index={i} />
+                ))
+              : showcase.map((p, i) => (
+                  <TombstoneCard key={p.id} project={p} index={i} />
+                ))}
           </div>
         </section>
       )}

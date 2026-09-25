@@ -6,6 +6,8 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
+import { GraveSpinner } from "./GraveyardSkeletons";
 import { BuryProjectDialog } from "./BuryProjectDialog";
 import { useNotifications, useSearch } from "@/lib/queries";
 
@@ -32,22 +34,32 @@ export function TopBar() {
           placeholder="Search the graveyard..."
           className="h-9 w-full border-border/70 bg-muted/30 pl-9 font-mono text-xs placeholder:text-muted-foreground/70 focus-visible:border-primary/60 focus-visible:ring-primary/30"
         />
-        {q.length > 1 && search.data && search.data.length > 0 && (
+        {q.length > 1 && (
           <ul className="absolute z-40 mt-1 w-full rounded-md border border-border/70 bg-popover/95 py-1 shadow-lg">
-            {search.data.slice(0, 6).map((p) => (
-              <li key={p.id}>
-                <button
-                  type="button"
-                  className="block w-full truncate px-3 py-1.5 text-left font-mono text-[0.68rem] hover:bg-muted/60"
-                  onClick={() => {
-                    setQ("");
-                    void navigate({ to: "/project/$projectId", params: { projectId: p.id } });
-                  }}
-                >
-                  {p.name}
-                </button>
+            {search.isLoading ? (
+              <li className="flex items-center gap-2 px-3 py-2.5">
+                <GraveSpinner size="sm" text="Scanning the cemetery..." />
               </li>
-            ))}
+            ) : search.data && search.data.length > 0 ? (
+              search.data.slice(0, 6).map((p) => (
+                <li key={p.id}>
+                  <button
+                    type="button"
+                    className="block w-full truncate px-3 py-1.5 text-left font-mono text-[0.68rem] hover:bg-muted/60"
+                    onClick={() => {
+                      setQ("");
+                      void navigate({ to: "/project/$projectId", params: { projectId: p.id } });
+                    }}
+                  >
+                    {p.name}
+                  </button>
+                </li>
+              ))
+            ) : (
+              <li className="px-3 py-2 font-mono text-[0.68rem] text-muted-foreground">
+                No matching graves found.
+              </li>
+            )}
           </ul>
         )}
       </div>
@@ -62,7 +74,16 @@ export function TopBar() {
           <PopoverContent align="end" className="w-72 border-border/70 p-0">
             <p className="terminal-label border-b border-border/60 px-3 py-2">notifications</p>
             <ul className="max-h-72 overflow-y-auto">
-              {(notifications.data ?? []).length === 0 ? (
+              {notifications.isLoading ? (
+                <div className="space-y-3 p-3">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="space-y-1">
+                      <Skeleton className="h-3 w-3/4" />
+                      <Skeleton className="h-2.5 w-full" />
+                    </div>
+                  ))}
+                </div>
+              ) : (notifications.data ?? []).length === 0 ? (
                 <li className="px-3 py-4 font-mono text-[0.68rem] text-muted-foreground">The crypt is quiet.</li>
               ) : (
                 (notifications.data ?? []).map((n) => (

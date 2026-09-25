@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { FolderArchive } from "lucide-react";
 
 import { PageHeader } from "@/components/graveyard/PageHeader";
+import { CollectionsSkeleton } from "@/components/graveyard/GraveyardSkeletons";
 import { useCollections } from "@/lib/queries";
 
 export const Route = createFileRoute("/_shell/collections")({
@@ -17,7 +18,7 @@ export const Route = createFileRoute("/_shell/collections")({
 });
 
 function CollectionsPage() {
-  const { data: collections = [] } = useCollections();
+  const { data: collections = [], isLoading } = useCollections();
 
   return (
     <div>
@@ -26,7 +27,10 @@ function CollectionsPage() {
         title="COLLECTIONS"
         description="Themed crypts. Group remains by era, ambition, or shared regret."
       />
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+      {isLoading ? (
+        <CollectionsSkeleton />
+      ) : (
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {collections.map((c, i) => (
           <section
             key={c.id}
@@ -53,6 +57,7 @@ function CollectionsPage() {
           </section>
         ))}
       </div>
+      )}
     </div>
   );
 }
